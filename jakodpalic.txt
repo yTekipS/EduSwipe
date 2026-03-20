@@ -1,0 +1,4 @@
+1. odpal ten folder w cmd
+
+2. npm install
+3. npm run dev
