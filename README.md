@@ -18,26 +18,32 @@ Uczniowie szkół średnich i podstawowych w Rzeszowie i na Podkarpaciu często 
 3. **Swiping Tinder-style**:
    - ⬅️ **Swipe left** - nie teraz
    - ➡️ **Swipe right** - pasuje!
-   - ⬆️ **Super Like** (swipe up) - wysyłaj Fast Track notifikacje
+   - ⬆️ **Super Like** (swipe up) - wyróżniona szkoła, animacja z obrotem
 4. **"IT'S A MATCH!" modal** - pojawiają się gdy dopasowanie > 50%
 5. **Fast Track notyfikacje** - kontekstowe powiadomienia dla Super Like (auto-dismiss po 5.2s)
 6. **Profil szkoły w stylu dating app**:
    - Bio szkoły
    - Zielone flagi 🟢 (zalety)
    - Czerwone flagi 🔴 (wady)
-   - CTA button ("First Date" - link do strony)
+   - CTA button ("First Date" - link do strony/dni otwartych)
 7. **Ranking dopasowań** - wyranking szkół procentowo dopasowanych do Ciebie
-8. **Informacje szczegółowe** - opis, specjalizacje, lokalizacja, odległość każdej szkoły
+8. **Informacje szczegółowe** - opis, specjalizacje, lokalizacja każdej szkoły
+9. **Chat panel** - asystent edukacyjny do pytań o szkoły, kierunki, miasta
+10. **Dark mode** - przełączanie między trybem jasnym i ciemnym
+11. **Responsive design** - optymalizacja na wszystkie urządzenia (mobile-first)
+12. **Inteligentne filtrowanie** - szkoły z 0% dopasowaniem nie są pokazywane
 
 ## 💻 Tech Stack
 
 - **React 18** - UI framework
 - **TypeScript** - type safety
-- **Tailwind CSS** - styling
+- **Tailwind CSS** - styling z dark mode support
 - **Vite 5** - szybki build tool
 - **Capacitor 8** - cross-platform native bridge (Android APK)
 - **Gradle 8.14** - Android build system
-- **PWA** - offline support (skonfigurowano favicon i icons)
+- **PWA** - offline support (favicon i icons)
+- **Recharts** - wykresy dla analytics (dashboard)
+- **Dnd-kit** (opcjonalnie) - drag & drop dla przyszłych feature'ów
 
 ## 📦 Instalacja & Uruchomienie
 
@@ -113,33 +119,20 @@ Ranking szkół posortowany po stopniu dopasowania do zainteresowań użytkownik
 
 ## 📊 Dane w aplikacji
 
-### Szkoły średnie (13+)
-- **Rzeszów**: Liceum Ogólnokształcące im. Gołębskiego, Technikum Ekonomiczne
-- **Mielec**: Liceum Akademickie
-- **Krosno**: Liceum Plastyczne
-- **Łańcut**: Akademickie Liceum Ogólnokształcące
-- **Ropczyce**: Liceum Ogólnokształcące
-- **Sanok**: Technikum Informatyczne
-- **Jasło**: Limuem Ogólnokształcące
-- **Tarnobrzeg**: Technikum Grafiki Komputerowej
-- I specjalizowane szkoły (programistyczne, grafiki)
+### Szkoły średnie (40+)
+- Szkoły ogólnokształcące, techniczne i specjalistyczne z całego Podkarpacia
+- Każda szkoła ma przypisane zainteresowania pasujące do jej profilu
+- Dane zawierają: specjalizacje, opis, lokalizację, stronę internetową
+- Dostępne profile: IT, inżynieria, biznes, sztuka, opieka zdrowotna, turystyka
 
-### Uniwersytety (20+)
-- **Rzeszów**: Politechnika Rzeszowska, Uniwersytet Rzeszowski
-- **Kraków**: AGH, Politechnika Krakowska, Uniwersytet Ekonomiczny
-- **Warszawa**: Politechnika Warszawska, Uniwersytet Warszawski
-- **Lublin**: Uniwersytet Marii Curie-Skłodowskiej
-- **Regionalne**: Wyższa Szkoła Informatyki i Zarządzania, WSPiA Rzeszów
-- **Akademie**: Akademia Nauk Stosowanych, Polska Akademia Nauk Stosowanych
+### Uniwersytety (25+)
+- **Rzeszów**: Politechnika Rzeszowska, Uniwersytet Rzeszowski, WSIiZ, WSPiA
+- **Krosno**: Państwowa Akademia Nauk Stosowanych
+- **Tarnobrzeg**: PANS w Tarnobrzegu
+- **Przemyśl**: Akademia Nauk Stosowanych
+- **Lokalne firmy**: Ideo, Asseco Poland, VIGO Photonics, BorgWarner, ZETO
 
-### Partnery biznesowi (3+)
-- **Ideo** - software development
-- **Asseco** - enterprise solutions
-- **VIGO Photonics** - elektronika
-- **BorgWarner** - automotive
-- **ZETO** - industrial
-
-### Zainteresowania
+### Zainteresowania (12 kategorii)
 - 👥 Praca z ludźmi
 - 📊 Analiza danych
 - 🎨 Sztuka i dizajn
@@ -175,20 +168,29 @@ Start
 ## ✨ Przyszłe udoskonalenia
 
 - [x] Swiping Tinder-style
-- [x] Super Like (swipe up)
+- [x] Super Like (swipe up) z animacją
 - [x] Match modal (IT'S A MATCH!)
 - [x] Fast Track notyfikacje
 - [x] Profil szkoły w stylu dating app (bio, flagi, CTA)
 - [x] Android APK build setup
 - [x] Branding (logo, favicon, app icon)
+- [x] Dark mode (toggle w nagłówku, localStorage persistence)
+- [x] Chat panel z chatbotem (asystent edukacyjny)
+- [x] Sponsor banner i footer (ukryty w aplikacji mobilnej)
+- [x] Responsive design (mobile-first)
+- [x] Filtrowanie szkół z 0% match score
+- [x] Mapowanie zainteresowań na polskie nazwy
 - [ ] Instalacja na domowy ekran (PWA)
-- [ ] Dark mode
 - [ ] Logowanie użytkownika
 - [ ] Zapisywanie preferencji
 - [ ] Integracja z rzeczywistym API
 - [ ] Mapka z lokalizacją
 - [ ] Sharing wyników
 - [ ] Oceny i opinie od studentów
+
+## 🌙 Dark Mode
+
+Aplikacja obsługuje wbudowany dark mode z automatycznym wykrywaniem preferencji systemu oraz możliwością ręcznego przełączania. Ustawienie jest zapisywane w localStorage.
 
 ## 📝 Licencja
 
