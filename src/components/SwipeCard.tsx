@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { School } from '../types';
-import { INTERESTS } from '../data/schools';
 
 interface SwipeCardProps {
   school: School;
@@ -13,7 +12,6 @@ const SWIPE_THRESHOLD = 100;
 const SUPERLIKE_THRESHOLD = 110;
 const SWIPE_OUT_DISTANCE = 520;
 const SWIPE_ANIMATION_MS = 220;
-const INTEREST_LABELS = new Map(INTERESTS.map((interest) => [interest.id, interest.name]));
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({
   school,
@@ -139,6 +137,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       : `transform ${SWIPE_ANIMATION_MS}ms ease, opacity ${SWIPE_ANIMATION_MS}ms ease`,
   };
 
+  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
   return (
     <div
       onPointerDown={handlePointerDown}
@@ -153,7 +153,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     >
       <div
         style={cardStyle}
-        className="relative bg-white rounded-lg border-2 border-gray-200 p-8 min-h-96 flex flex-col justify-between"
+        className="relative bg-white dark:bg-slate-800 rounded-lg border-2 border-gray-200 dark:border-slate-700 p-8 min-h-96 flex flex-col justify-between transition-colors"
       >
         <div
           className="absolute top-4 left-4 px-3 py-1 border-2 border-red-500 text-red-500 font-bold rounded rotate-[-12deg]"
@@ -178,29 +178,29 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">🎓</span>
-            <span className="px-3 py-1 bg-primary text-white text-xs rounded-full font-semibold">
+            <span className="px-3 py-1 bg-primary dark:bg-blue-600 text-white text-xs rounded-full font-semibold transition-colors">
               {school.type === 'secondary' ? 'Szkoła średnia' : 'Uniwersytet'}
             </span>
           </div>
 
-          <h2 className="text-3xl font-bold text-gray-900 mt-4 mb-2">{school.name}</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mt-4 mb-2 transition-colors">{school.name}</h2>
 
-          <div className="flex items-center gap-2 text-gray-600 mb-4">
+          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4 transition-colors">
             <span>📍</span>
             <span>{school.location}</span>
           </div>
 
-          <p className="text-gray-700 mb-6">{school.description}</p>
+          <p className="text-gray-700 dark:text-gray-300 mb-6 transition-colors">{school.description}</p>
         </div>
 
         {/* Specializations */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Specjalizacje:</h3>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 transition-colors">Specjalizacje:</h3>
           <div className="flex flex-wrap gap-2 mb-6">
             {school.specialization.map((spec) => (
               <span
                 key={spec}
-                className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm font-medium"
+                className="px-3 py-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded text-sm font-medium transition-colors"
               >
                 {spec}
               </span>
@@ -210,23 +210,23 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
         {/* Interests */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Pasuje do zainteresowań:</h3>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 transition-colors">Pasuje do zainteresowań:</h3>
           <div className="flex flex-wrap gap-2">
             {school.interests.map((interest) => (
               <span
                 key={interest}
-                className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-medium"
+                className="px-2 py-1 bg-primary/10 dark:bg-blue-900/30 text-primary dark:text-blue-400 rounded text-xs font-medium transition-colors"
               >
-                {INTEREST_LABELS.get(interest) || interest}
+                {interest}
               </span>
             ))}
           </div>
         </div>
 
         {/* Action Hints */}
-        <div className="flex justify-between mt-8 text-gray-400 text-sm">
+        <div className="flex justify-between mt-8 text-gray-400 dark:text-gray-500 text-sm transition-colors">
           <span className="flex items-center gap-1">← Nie teraz</span>
-          <span className="flex items-center gap-1 text-blue-500 font-semibold">↑ Super Like</span>
+          <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400 font-semibold transition-colors">↑ Super Like</span>
           <span className="flex items-center gap-1">Pasuje! →</span>
         </div>
       </div>
