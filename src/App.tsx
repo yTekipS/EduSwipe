@@ -294,14 +294,20 @@ function App() {
 
   const tintOpacity = 0.35 * swipeVisual.intensity;
   const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const appBackground =
-    swipeVisual.direction === 'right'
+  const isSwipeActive = swipeVisual.direction !== 'neutral';
+  
+  let bgColor = '#ffffff';
+  let bgImage = 'none';
+  
+  if (isSwipeActive) {
+    bgColor = swipeVisual.direction === 'right'
       ? `rgba(20, 83, 45, ${tintOpacity})`
-      : swipeVisual.direction === 'left'
-        ? `rgba(127, 29, 29, ${tintOpacity})`
-        : isDarkMode
-          ? '#0f172a'
-          : '#ffffff';
+      : `rgba(127, 29, 29, ${tintOpacity})`;
+  } else if (!isDarkMode) {
+    bgImage = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
+  } else {
+    bgColor = '#0f172a';
+  }
 
   const firstDateLink = matchedSchool?.firstDateLink || matchedSchool?.website;
   const firstDateLabel = matchedSchool?.firstDateLabel || 'Link do Dni Otwartych';
@@ -310,7 +316,9 @@ function App() {
     <div
       className="min-h-screen"
       style={{
-        backgroundColor: appBackground,
+        backgroundImage: bgImage,
+        backgroundColor: bgColor,
+        backgroundAttachment: 'fixed',
         transition: 'background-color 140ms linear',
       }}
     >

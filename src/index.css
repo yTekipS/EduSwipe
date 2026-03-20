@@ -10,16 +10,16 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 300ms, color 300ms;
-}
-
-body {
-  background: #ffffff;
-  color: #000000;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
   min-height: 100vh;
 }
 
-html.dark body {
-  background: #0f172a;
-  color: #ffffff;
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  min-height: 100vh;
+}
+
+#root {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
 }
