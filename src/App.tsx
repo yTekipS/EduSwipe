@@ -432,6 +432,13 @@ function App() {
           >
             Zamknij
           </button>
+          
+          <ChatPanel
+        schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
+        selectedInterests={state.profile.interests}
+        educationType={state.profile.selectedType}
+        interests={INTERESTS}
+      />
         </div>
       )}
     </div>
