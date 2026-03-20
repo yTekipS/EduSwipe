@@ -196,7 +196,7 @@ Projekt edukacyjny
 
 ---
 
-**Stworzono podcza TechQuest 2026🎯**
+**Stworzono podczas TechQuest 2026🎯**
 
 ## 📧 Kontakt
 
