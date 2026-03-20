@@ -196,7 +196,7 @@ Projekt edukacyjny
 
 ---
 
-**Stworzono dla Konkursu Kuratorium Oświaty w Rzeszowie 🎯**
+**Stworzono podcza TechQuest 2026🎯**
 
 ## 📧 Kontakt
 
