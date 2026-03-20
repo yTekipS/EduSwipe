@@ -10,9 +10,16 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 300ms, color 300ms;
 }
 
 body {
   background: #ffffff;
+  color: #000000;
   min-height: 100vh;
+}
+
+html.dark body {
+  background: #0f172a;
+  color: #ffffff;
 }

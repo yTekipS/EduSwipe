@@ -7,9 +7,10 @@ import { InterestSelector } from './components/InterestSelector';
 import { SwipeCard } from './components/SwipeCard';
 import { Results } from './components/Results';
 import { Header } from './components/Header';
-import { ChatPanel } from './components/ChatPanel';
+import { Dashboard } from './components/Dashboard';
+import { useDarkMode } from './hooks/useDarkMode';
 
-type Step = 'type' | 'interests' | 'swipe' | 'results';
+type Step = 'type' | 'interests' | 'swipe' | 'results' | 'analytics';
 type SwipeVisualDirection = 'left' | 'right' | 'neutral';
 
 interface AppState {
@@ -28,6 +29,7 @@ interface FastTrackNotice {
 }
 
 function App() {
+  useDarkMode(); // Initialize dark mode listener
   const [state, setState] = useState<AppState>({
     step: 'type',
     profile: {
@@ -256,7 +258,19 @@ function App() {
         currentSchoolIndex: 0,
         likedSchools: [],
       }));
+    } else if (state.step === 'analytics') {
+      setState((prev) => ({
+        ...prev,
+        step: 'type',
+      }));
     }
+  };
+
+  const handleOpenAnalytics = () => {
+    setState((prev) => ({
+      ...prev,
+      step: 'analytics',
+    }));
   };
 
   const canStartSwiping = state.profile.interests.length >= 3;
@@ -278,12 +292,15 @@ function App() {
   }, [fastTrackNotice]);
 
   const tintOpacity = 0.35 * swipeVisual.intensity;
+  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const appBackground =
     swipeVisual.direction === 'right'
       ? `rgba(20, 83, 45, ${tintOpacity})`
       : swipeVisual.direction === 'left'
         ? `rgba(127, 29, 29, ${tintOpacity})`
-        : '#ffffff';
+        : isDarkMode
+          ? '#0f172a'
+          : '#ffffff';
 
   const firstDateLink = matchedSchool?.firstDateLink || matchedSchool?.website;
   const firstDateLabel = matchedSchool?.firstDateLabel || 'Link do Dni Otwartych';
@@ -300,6 +317,7 @@ function App() {
         currentStep={state.step}
         educationType={state.profile.selectedType}
         onBack={handleBack}
+        onOpenAnalytics={handleOpenAnalytics}
       />
 
       <main className="max-w-7xl mx-auto px-4 py-12">
@@ -340,13 +358,15 @@ function App() {
                 onVisualChange={handleSwipeVisualChange}
               />
             </div>
-            <div className="text-center mt-6 text-gray-600">
+            <div className="text-center mt-6 text-gray-600 dark:text-gray-400 transition-colors">
               Szkoła {state.currentSchoolIndex + 1} z {currentSchools.length}
             </div>
           </div>
         )}
 
         {state.step === 'results' && <Results matches={matches} onReset={handleReset} />}
+
+        {state.step === 'analytics' && <Dashboard onBack={handleBack} />}
       </main>
 
       {matchedSchool && (
@@ -355,16 +375,16 @@ function App() {
             🎉 🎊 ✨ 🎉 🎊
           </div>
 
-          <div className="relative w-full max-w-xl bg-white rounded-2xl p-8 text-center shadow-2xl border-4 border-primary">
-            <p className="text-4xl md:text-5xl font-black text-primary mb-2">IT'S A MATCH!</p>
-            <p className="text-2xl font-bold text-gray-900 mb-5">MASZ PARY! 💘</p>
+          <div className="relative w-full max-w-xl bg-white dark:bg-slate-800 rounded-2xl p-8 text-center shadow-2xl border-4 border-primary dark:border-blue-400 transition-colors">
+            <p className="text-4xl md:text-5xl font-black text-primary dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-blue-400 dark:to-cyan-400 mb-2 transition-colors">IT'S A MATCH!</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-5 transition-colors">MASZ PARY! 💘</p>
 
-            <p className="text-lg font-semibold text-gray-900 mb-1">{matchedSchool.name}</p>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-lg font-semibold text-gray-900 dark:text-white mb-1 transition-colors">{matchedSchool.name}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 transition-colors">
               {matchedSchool.distanceKm ? `${matchedSchool.distanceKm} km od Ciebie` : matchedSchool.location}
             </p>
 
-            <p className="text-gray-700 mb-5">
+            <p className="text-gray-700 dark:text-gray-300 mb-5 transition-colors">
               {matchedSchool.datingBio || matchedSchool.description}
             </p>
 
@@ -373,17 +393,17 @@ function App() {
                 href={firstDateLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+                className="inline-block px-6 py-3 bg-primary dark:bg-blue-600 text-white rounded-lg font-semibold hover:bg-primary/90 dark:hover:bg-blue-700 transition-colors"
               >
                 Zaproś na pierwszą randkę
               </a>
             )}
 
-            <p className="text-xs text-gray-500 mt-2">{firstDateLabel}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 transition-colors">{firstDateLabel}</p>
 
             <button
               onClick={() => setMatchedSchool(null)}
-              className="mt-6 text-sm text-gray-600 hover:text-gray-900"
+              className="mt-6 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Kontynuuj przeglądanie
             </button>
@@ -392,7 +412,7 @@ function App() {
       )}
 
       {fastTrackNotice && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-2xl bg-blue-600 text-white rounded-xl shadow-xl p-4 border border-blue-400">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-2xl bg-gradient-to-r dark:from-blue-700 dark:to-cyan-600 from-blue-600 to-blue-500 text-white rounded-xl shadow-2xl p-4 border border-blue-400 dark:border-blue-300 transition-colors">
           <p className="font-bold mb-1">{fastTrackNotice.title}</p>
           <p className="text-sm">{fastTrackNotice.message}</p>
           {fastTrackNotice.ctaLink && (
@@ -400,26 +420,19 @@ function App() {
               href={fastTrackNotice.ctaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-3 text-sm font-semibold underline text-blue-100"
+              className="inline-block mt-3 text-sm font-semibold underline text-blue-100 hover:text-white transition-colors"
             >
               {fastTrackNotice.ctaLabel || 'Otwórz szczegóły'}
             </a>
           )}
           <button
             onClick={() => setFastTrackNotice(null)}
-            className="mt-2 text-xs underline text-blue-100"
+            className="mt-2 text-xs underline text-blue-100 hover:text-white transition-colors"
           >
             Zamknij
           </button>
         </div>
       )}
-
-      <ChatPanel
-        schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
-        selectedInterests={state.profile.interests}
-        educationType={state.profile.selectedType}
-        interests={INTERESTS}
-      />
     </div>
   );
 }

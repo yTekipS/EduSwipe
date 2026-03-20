@@ -14,8 +14,8 @@ export const InterestSelector: React.FC<InterestSelectorProps> = ({
 }) => {
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Wybierz swoje zainteresowania</h2>
-      <p className="text-gray-600 mb-8">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">Wybierz swoje zainteresowania</h2>
+      <p className="text-gray-600 dark:text-gray-400 mb-8 transition-colors">
         Kliknij na przynajmniej 3 zainteresowania, aby znaleźć idealne szkoły dla Ciebie
       </p>
 
@@ -26,8 +26,8 @@ export const InterestSelector: React.FC<InterestSelectorProps> = ({
             onClick={() => onToggle(interest.id)}
             className={`p-4 rounded border-2 transition-all duration-200 text-center ${
               selectedInterests.includes(interest.id)
-                ? 'border-primary bg-primary text-white'
-                : 'border-gray-300 bg-white text-gray-900 hover:border-primary'
+                ? 'border-primary bg-primary dark:border-blue-400 dark:bg-blue-600 text-white'
+                : 'border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white hover:border-primary dark:hover:border-blue-400'
             }`}
           >
             <div className="text-3xl mb-2">{interest.emoji}</div>
