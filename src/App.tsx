@@ -7,6 +7,7 @@ import { InterestSelector } from './components/InterestSelector';
 import { SwipeCard } from './components/SwipeCard';
 import { Results } from './components/Results';
 import { Header } from './components/Header';
+import { ChatPanel } from './components/ChatPanel';
 
 type Step = 'type' | 'interests' | 'swipe' | 'results';
 type SwipeVisualDirection = 'left' | 'right' | 'neutral';
@@ -412,6 +413,13 @@ function App() {
           </button>
         </div>
       )}
+
+      <ChatPanel
+        schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
+        selectedInterests={state.profile.interests}
+        educationType={state.profile.selectedType}
+        interests={INTERESTS}
+      />
     </div>
   );
 }

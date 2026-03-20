@@ -12,6 +12,7 @@ export interface School {
   name: string;
   type: EducationType;
   location: string;
+  region?: 'podkarpackie' | 'other';
   distanceKm?: number;
   partnerCategory?: 'school' | 'company';
   specialization: string[];

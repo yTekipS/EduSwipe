@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { School } from '../types';
+import { INTERESTS } from '../data/schools';
 
 interface SwipeCardProps {
   school: School;
@@ -12,6 +13,7 @@ const SWIPE_THRESHOLD = 100;
 const SUPERLIKE_THRESHOLD = 110;
 const SWIPE_OUT_DISTANCE = 520;
 const SWIPE_ANIMATION_MS = 220;
+const INTEREST_LABELS = new Map(INTERESTS.map((interest) => [interest.id, interest.name]));
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({
   school,
@@ -215,7 +217,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
                 key={interest}
                 className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-medium"
               >
-                {interest}
+                {INTEREST_LABELS.get(interest) || interest}
               </span>
             ))}
           </div>
