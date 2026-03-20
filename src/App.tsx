@@ -9,6 +9,7 @@ import { Results } from './components/Results';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import { useDarkMode } from './hooks/useDarkMode';
+import { ChatPanel } from './components/ChatPanel';
 
 type Step = 'type' | 'interests' | 'swipe' | 'results' | 'analytics';
 type SwipeVisualDirection = 'left' | 'right' | 'neutral';
