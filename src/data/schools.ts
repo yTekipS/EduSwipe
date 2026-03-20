@@ -24,7 +24,7 @@ export const SECONDARY_SCHOOLS: School[] = [
     specialization: ['Matematyka-fizyka', 'Biologia-chemia', 'Filologia'],
     interests: ['data', 'tech', 'nature', 'health'],
     description: 'Prestiżowe liceum z najlepszymi wynikami na maturze. Wysoki poziom nauczania przedmiotów ścisłych.',
-    website: 'https://lo1.rzeszow.pl',
+    website: 'https://1lo.rzeszow.pl',
   },
   {
     id: 'lo2',

@@ -19,7 +19,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ onSelect }) => {
         {/* Secondary School */}
         <button
           onClick={() => onSelect('secondary')}
-          className="bg-white dark:bg-slate-800 border-2 border-primary dark:border-blue-400 rounded-lg p-8 text-gray-900 dark:text-white hover:bg-primary/5 dark:hover:bg-slate-700 transition-colors"
+          className="type-card-primary bg-white dark:bg-slate-800 border-2 border-primary dark:border-blue-400 rounded-lg p-8 text-gray-900 dark:text-white cursor-pointer hover:shadow-lg dark:hover:shadow-lg transition-all duration-200"
         >
           <div className="text-5xl mb-4">🏫</div>
           <h2 className="text-2xl font-bold mb-3 text-primary dark:text-blue-400 transition-colors">Szkoła średnia</h2>
@@ -32,7 +32,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ onSelect }) => {
         {/* University */}
         <button
           onClick={() => onSelect('university')}
-          className="bg-white dark:bg-slate-800 border-2 border-secondary dark:border-orange-400 rounded-lg p-8 text-gray-900 dark:text-white hover:bg-secondary/5 dark:hover:bg-slate-700 transition-colors"
+          className="type-card-secondary bg-white dark:bg-slate-800 border-2 border-secondary dark:border-orange-400 rounded-lg p-8 text-gray-900 dark:text-white cursor-pointer hover:shadow-lg dark:hover:shadow-lg transition-all duration-200"
         >
           <div className="text-5xl mb-4">🎯</div>
           <h2 className="text-2xl font-bold mb-3 text-secondary dark:text-orange-400 transition-colors">Studia/Uniwersytet</h2>
@@ -43,7 +43,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ onSelect }) => {
         </button>
       </div>
 
-      <div className="mt-12 p-6 bg-gray-50 dark:bg-slate-800 rounded border-l-4 border-primary dark:border-blue-400 transition-colors">
+      <div className="mt-12 p-6 bg-gray-50 dark:bg-slate-800 rounded border-l-4 border-primary dark:border-blue-400 transition-colors duration-200">
         <h3 className="font-bold text-gray-900 dark:text-white mb-2 transition-colors">💡 Jak to działa?</h3>
         <ol className="text-gray-700 dark:text-gray-300 space-y-1 text-sm transition-colors">
           <li>1. Wybierz typ szkoły, którą szukasz</li>

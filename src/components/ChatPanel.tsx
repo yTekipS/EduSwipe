@@ -58,10 +58,6 @@ const PODKARPACKIE_CITIES = new Set([
 ]);
 
 const isPodkarpackieSchool = (school: School): boolean => {
-  if (school.region === 'podkarpackie') {
-    return true;
-  }
-
   return normalize(school.location)
     .split(/[\/(),-]/)
     .map((part) => part.trim())
@@ -377,7 +373,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         .join(', ');
 
       const list = recommended
-        .map((item) => `• ${item.school.name} (${item.score}/${selectedInterests.length} zgodnych zainteresowań)`)
+        .map((item) => `• ${item.school.name} (${item.score}/${selectedInterests.length} pasuje do zainteresowań)`)
         .join('\n');
 
       return `Na bazie Twoich zainteresowań (${interestNames}) polecam:\n${list}`;
@@ -441,7 +437,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       )}
 
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-[min(94vw,420px)] h-[70vh] max-h-[620px] bg-white border border-gray-200 shadow-2xl rounded-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-6 right-6 z-50 w-[min(94vw,420px)] h-[70vh] max-h-[620px] bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-2xl rounded-2xl flex flex-col overflow-hidden">
           <div className="bg-primary text-white px-4 py-3 flex items-center justify-between">
             <div>
               <p className="font-semibold">Asystent EduSwipe</p>
@@ -457,13 +453,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50 dark:bg-slate-700">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`max-w-[88%] whitespace-pre-line rounded-xl px-3 py-2 text-sm ${
                   message.role === 'assistant'
-                    ? 'bg-white border border-gray-200 text-gray-800'
+                    ? 'bg-white dark:bg-slate-600 border border-gray-200 dark:border-slate-500 text-gray-800 dark:text-slate-100'
                     : 'bg-primary text-white ml-auto'
                 }`}
               >
@@ -473,7 +469,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             <div ref={messageEndRef} />
           </div>
 
-          <div className="border-t border-gray-200 p-3 flex gap-2">
+          <div className="border-t border-gray-200 dark:border-slate-700 p-3 flex gap-2">
             <input
               value={input}
               onChange={(event) => setInput(event.target.value)}
@@ -483,7 +479,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 }
               }}
               placeholder="Np. Jakie profile IT są w Rzeszowie?"
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              className="flex-1 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
               disabled={isLoading}
             />
             <button

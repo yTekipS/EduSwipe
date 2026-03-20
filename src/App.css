@@ -1,8 +1,3 @@
-#root {
-  width: 100%;
-  height: 100%;
-}
-
 * {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -21,6 +16,68 @@ textarea {
   user-select: text;
 }
 
+/* Dark mode text colors */
+.dark {
+  color-scheme: dark;
+}
+
+.dark p,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #e2e8f0;
+}
+
+.dark button {
+  background-color: #334155;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+.dark button:hover {
+  background-color: #475569;
+}
+
+.dark input,
+.dark textarea {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+.dark input:focus,
+.dark textarea:focus {
+  border-color: #64748b;
+  outline: none;
+}
+
+.dark .bg-white {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #0f172a !important;
+}
+
+.dark .text-gray-900 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #334155 !important;
+}
+
 @keyframes swipeCardEnter {
   from {
     opacity: 0;
@@ -32,8 +89,35 @@ textarea {
   }
 }
 
+@keyframes superLikePulse {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.3) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes superLikeGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+  }
+}
+
 .swipe-card-enter {
   animation: swipeCardEnter 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.super-like-badge {
+  animation: superLikePulse 1s ease-out, superLikeGlow 1.5s infinite;
 }
 
 /* Sponsor branding enhancements */
@@ -148,5 +232,5 @@ main {
 
 /* Header shadow and polish */
 header {
-  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+  box-shadow: 0 4px 12px rgba(41, 55, 78, 0.15);
 }

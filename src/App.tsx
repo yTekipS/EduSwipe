@@ -10,9 +10,11 @@ import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import { useDarkMode } from './hooks/useDarkMode';
 import { ChatPanel } from './components/ChatPanel';
+import { SponsorFooter } from './components/SponsorFooter';
+import { SponsorBanner } from './components/SponsorBanner';
 
 type Step = 'type' | 'interests' | 'swipe' | 'results' | 'analytics';
-type SwipeVisualDirection = 'left' | 'right' | 'neutral';
+type SwipeVisualDirection = 'left' | 'right' | 'up' | 'neutral';
 
 interface AppState {
   step: Step;
@@ -30,7 +32,11 @@ interface FastTrackNotice {
 }
 
 function App() {
-  useDarkMode(); // Initialize dark mode listener
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const isNativeMobileApp =
+    typeof window !== 'undefined' &&
+    Boolean((window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.());
+
   const [state, setState] = useState<AppState>({
     step: 'type',
     profile: {
@@ -51,8 +57,20 @@ function App() {
   const [fastTrackNotice, setFastTrackNotice] = useState<FastTrackNotice | null>(null);
 
   const currentSchools = useMemo(() => {
-    return state.profile.selectedType === 'secondary' ? SECONDARY_SCHOOLS : UNIVERSITIES;
-  }, [state.profile.selectedType]);
+    const allSchools = state.profile.selectedType === 'secondary' ? SECONDARY_SCHOOLS : UNIVERSITIES;
+    
+    // Filtruj szkoły aby pokazać tylko te z match score > 0
+    if (state.profile.interests.length === 0) {
+      return allSchools;
+    }
+    
+    return allSchools.filter((school) => {
+      const hasMatchingInterest = school.interests.some((interest) =>
+        state.profile.interests.includes(interest)
+      );
+      return hasMatchingInterest;
+    });
+  }, [state.profile.selectedType, state.profile.interests]);
 
   const currentSchool = currentSchools[state.currentSchoolIndex];
 
@@ -293,16 +311,18 @@ function App() {
   }, [fastTrackNotice]);
 
   const tintOpacity = 0.35 * swipeVisual.intensity;
-  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isSwipeActive = swipeVisual.direction !== 'neutral';
   
   let bgColor = '#ffffff';
   let bgImage = 'none';
-  
+
   if (isSwipeActive) {
-    bgColor = swipeVisual.direction === 'right'
-      ? `rgba(20, 83, 45, ${tintOpacity})`
-      : `rgba(127, 29, 29, ${tintOpacity})`;
+    bgColor =
+      swipeVisual.direction === 'right'
+        ? `rgba(20, 83, 45, ${tintOpacity})`
+        : swipeVisual.direction === 'left'
+          ? `rgba(127, 29, 29, ${tintOpacity})`
+          : `rgba(250, 204, 21, ${Math.max(0.18, tintOpacity)})`;
   } else if (!isDarkMode) {
     bgImage = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
   } else {
@@ -313,21 +333,25 @@ function App() {
   const firstDateLabel = matchedSchool?.firstDateLabel || 'Link do Dni Otwartych';
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        backgroundImage: bgImage,
-        backgroundColor: bgColor,
-        backgroundAttachment: 'fixed',
-        transition: 'background-color 140ms linear',
-      }}
-    >
+    <>
+      <div
+        className="min-h-screen"
+        style={{
+          backgroundImage: bgImage,
+          backgroundColor: bgColor,
+          backgroundAttachment: 'fixed',
+          transition: 'background-color 140ms linear',
+        }}
+      >
       <Header
         currentStep={state.step}
         educationType={state.profile.selectedType}
         onBack={handleBack}
         onOpenAnalytics={handleOpenAnalytics}
+        isDarkMode={isDarkMode}
+        onToggleTheme={toggleDarkMode}
       />
+      {!isNativeMobileApp && <SponsorBanner />}
 
       <main className="max-w-7xl mx-auto px-4 py-12">
         {state.step === 'type' && <TypeSelector onSelect={handleSelectType} />}
@@ -365,6 +389,7 @@ function App() {
                 onSwipe={handleSwipe}
                 onSuperLike={handleSuperLike}
                 onVisualChange={handleSwipeVisualChange}
+                interests={INTERESTS}
               />
             </div>
             <div className="text-center mt-6 text-gray-600 dark:text-gray-400 transition-colors">
@@ -443,15 +468,17 @@ function App() {
         </div>
       )}
 
-      {state.step !== 'analytics' && (
-        <ChatPanel
-          schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
-          selectedInterests={state.profile.interests}
-          educationType={state.profile.selectedType}
-          interests={INTERESTS}
-        />
-      )}
-    </div>
+        {state.step !== 'analytics' && (
+          <ChatPanel
+            schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
+            selectedInterests={state.profile.interests}
+            educationType={state.profile.selectedType}
+            interests={INTERESTS}
+          />
+        )}
+      </div>
+      {!isNativeMobileApp && <SponsorFooter />}
+    </>
   );
 }
 
