@@ -262,7 +262,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
           {/* Top Matches */}
           <div className="bg-gray-50 dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-900 border border-gray-200 dark:border-slate-700 rounded-2xl p-8 shadow-lg dark:shadow-2xl transition-all duration-300">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2 transition-colors">
-              <span>🏆</span> Top 5 Szkół
+              <span>🏆</span> Top 5 Szkół  
             </h2>
             <div className="space-y-4">
               {topSchools.map((item, idx) => (
@@ -274,7 +274,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
                     <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{idx + 1}</div>
                     <span className="text-gray-700 dark:text-slate-300 transition-colors">{item.name}</span>
                   </div>
-                  <span className="text-blue-600 dark:text-cyan-400 font-semibold transition-colors">{item.matches}</span>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-xs text-gray-500 dark:text-slate-400 font-medium">Matches</span>
+                    <span className="text-blue-600 dark:text-cyan-400 font-semibold transition-colors">{item.matches}</span>
+                  </div>
                 </div>
               ))}
             </div>
