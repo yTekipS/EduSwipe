@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, lazy } from 'react';
+import { useEffect, useMemo, useState, lazy, Suspense } from 'react';
 import './App.css';
 import { EducationType, School, MatchResult, UserProfile, Coordinates } from './types';
 import { INTERESTS, SECONDARY_SCHOOLS, UNIVERSITIES } from './data/schools';
@@ -20,6 +20,13 @@ const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ defau
 const ChatPanel = lazy(() => import('./components/ChatPanel').then(m => ({ default: m.ChatPanel })));
 const SponsorFooter = lazy(() => import('./components/SponsorFooter').then(m => ({ default: m.SponsorFooter })));
 const SponsorBanner = lazy(() => import('./components/SponsorBanner').then(m => ({ default: m.SponsorBanner })));
+
+// Loading fallback
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center w-full h-32">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+  </div>
+);
 
 type Step = 'type' | 'interests' | 'swipe' | 'results' | 'analytics';
 type SwipeVisualDirection = 'left' | 'right' | 'up' | 'neutral';
@@ -395,7 +402,11 @@ function App() {
         isDarkMode={isDarkMode}
         onToggleTheme={toggleDarkMode}
       />
-      {!isNativeMobileApp && <SponsorBanner />}
+      {!isNativeMobileApp && (
+        <Suspense fallback={<LoadingSpinner />}>
+          <SponsorBanner />
+        </Suspense>
+      )}
 
       <main className="max-w-7xl mx-auto px-4 py-12">
         {state.step === 'type' && <TypeSelector onSelect={handleSelectType} />}
@@ -448,7 +459,11 @@ function App() {
 
         {state.step === 'results' && <Results matches={matches} onReset={handleReset} />}
 
-        {state.step === 'analytics' && <Dashboard onBack={handleBack} />}
+        {state.step === 'analytics' && (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Dashboard onBack={handleBack} />
+          </Suspense>
+        )}
       </main>
 
       {matchedSchool && (
@@ -517,15 +532,21 @@ function App() {
       )}
 
         {state.step !== 'analytics' && (
-          <ChatPanel
-            schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
-            selectedInterests={state.profile.interests}
-            educationType={state.profile.selectedType}
-            interests={INTERESTS}
-          />
+          <Suspense fallback={<LoadingSpinner />}>
+            <ChatPanel
+              schools={[...SECONDARY_SCHOOLS, ...UNIVERSITIES]}
+              selectedInterests={state.profile.interests}
+              educationType={state.profile.selectedType}
+              interests={INTERESTS}
+            />
+          </Suspense>
         )}
       </div>
-      {!isNativeMobileApp && <SponsorFooter />}
+      {!isNativeMobileApp && (
+        <Suspense fallback={<LoadingSpinner />}>
+          <SponsorFooter />
+        </Suspense>
+      )}
     </>
   );
 }
