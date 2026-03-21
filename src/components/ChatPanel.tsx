@@ -27,7 +27,7 @@ const normalize = (text: string): string =>
     .replace(/ł/g, 'l');
 
 const EXTERNAL_CHAT_URL = import.meta.env.VITE_CHAT_API_URL;
-const EXTERNAL_CHAT_MODEL = import.meta.env.VITE_CHAT_MODEL || 'gpt-4o-mini';
+const EXTERNAL_CHAT_MODEL = import.meta.env.VITE_CHAT_MODEL; 
 const EXTERNAL_CHAT_API_KEY = import.meta.env.VITE_CHAT_API_KEY;
 
 const PODKARPACKIE_CITIES = new Set([
@@ -185,30 +185,58 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         scopedSchools = scopedSchools.filter(isPodkarpackieSchool);
       }
 
-      const schoolsContext = scopedSchools
-        .slice(0, 60)
-        .map(
-          (school) =>
-            `${school.name} (${school.location}) — profile/kierunki: ${school.specialization.join(', ')}`
-        )
-        .join('\n');
+      // Filtruj po mieście jeśli jest wymienione w pytaniu
+      const uniqueLocations = Array.from(new Set(schools.map((s) => s.location)));
+      const mentionedCity = uniqueLocations.find((city) => query.includes(normalize(city)));
+      if (mentionedCity) {
+        scopedSchools = scopedSchools.filter((school) => school.location === mentionedCity);
+      }
 
       const selectedInterestNames = selectedInterests
         .map((id) => interestById.get(id))
         .filter(Boolean)
         .join(', ');
 
-      const systemPrompt = `Jesteś doradcą edukacyjnym w aplikacji EduSwipe. Odpowiadaj po polsku, krótko i konkretnie. Używaj WYŁĄCZNIE danych z kontekstu poniżej. Jeśli czegoś nie ma w danych, napisz to wprost i dopytaj.\n\nTyp edukacji użytkownika: ${educationType === 'secondary' ? 'szkoły średnie' : 'uczelnie'}\nZainteresowania użytkownika: ${selectedInterestNames || 'brak'}\n\nDostępne szkoły/profile:\n${schoolsContext}`;
+      const uniqueCities = Array.from(new Set(scopedSchools.map((s) => s.location))).slice(0, 20).join(', ');
 
-      const historyMessages: ApiMessage[] = history.slice(-8).map((message) => ({
-        role: message.role,
-        content: message.text,
-      }));
+      // Dodaj do systemu prompt tylko RELEVANT szkoły (max 30) zamiast wszystkich
+      const relevantSchools = scopedSchools
+        .slice(0, 30)
+        .map((school) => `• ${school.name} (${school.location}) — ${school.specialization.join(', ')}`)
+        .join('\n');
+
+      const systemPrompt = `ROLA: Doradca edukacyjny EduSwipe
+JĘZYK: ZAWSZE Polski
+FORMAT: KRÓTKO i KONKRETNIE - MAX 2-3 ZDANIA
+
+OBOWIĄZKOWE REGUŁY:
+1. NIGDY nie wypisuj pełnych list szkoł w odpowiedzi
+2. Zawsze podaj MAX 5 konkretnych nazw szkół, a resztę podsumuj "i X innych"
+3. Jeśli pytanie nie wspomina miasta → poproś "W którym mieście?"
+4. Jeśli brak konkretnego profilu → poproś "Jaki profil/kierunek Cię interesuje?"
+
+DOSTĘPNE SZKOŁY (tylko ${scopedSchools.length} pasujących do kryteriów):
+${relevantSchools}
+${scopedSchools.length > 30 ? `\n... i ${scopedSchools.length - 30} innych` : ''}
+
+KONTEKST:
+- Typ: ${educationType === 'secondary' ? 'szkoły średnie' : 'uczelnie'}
+- Zainteresowania: ${selectedInterestNames || 'nie wybrane'}
+- Miasta: ${uniqueCities}
+`;
+
+      const historyMessages: ApiMessage[] = history
+        .filter((msg) => msg.role !== 'assistant' || msg.text.length < 500)
+        .slice(-10)
+        .map((message) => ({
+          role: message.role,
+          content: message.text,
+        }));
 
       const apiMessages: ApiMessage[] = [
         { role: 'system', content: systemPrompt },
         ...historyMessages,
-        { role: 'user', content: rawQuery },
+        { role: 'user', content: `${rawQuery}\n\nPAMIĘTAJ: Odpowiedź MAX 2 zdania, nigdy nie wypisuj pełnych list!` },
       ];
 
       const response = await fetch(EXTERNAL_CHAT_URL, {
@@ -220,17 +248,27 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         body: JSON.stringify({
           model: EXTERNAL_CHAT_MODEL,
           messages: apiMessages,
-          temperature: 0.3,
+          temperature: 0.7,
+          max_tokens: 512,
         }),
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Chat API error:', response.status, errorText);
         return null;
       }
 
       const data = await response.json();
-      return extractApiContent(data);
-    } catch {
+      console.log('📡 API Raw response:', JSON.stringify(data).slice(0, 200));
+      const reply = extractApiContent(data);
+      console.log('✅ Extracted reply:', reply?.slice(0, 150));
+      if (!reply) {
+        console.warn('⚠️ No content extracted from API response:', data);
+      }
+      return reply;
+    } catch (error) {
+      console.error('❌ Chat API exception:', error);
       return null;
     }
   };
@@ -251,11 +289,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       query.includes('uniwersyt') ||
       query.includes('uczelni') ||
       query.includes('uczeln') ||
-      query.includes('studia');
+      query.includes('studia') ||
+      query.includes('uczelnie');
     const wantsSecondary =
-      query.includes('liceum') || query.includes('technikum') || query.includes('szkola srednia');
+      query.includes('liceum') || 
+      query.includes('technikum') || 
+      query.includes('szkol srednia') || 
+      query.includes('srednia');
     const wantsPodkarpacie =
-      query.includes('podkarpac') || query.includes('podkarpaciu') || query.includes('podkarpackie');
+      query.includes('podkarpac') || 
+      query.includes('podkarpaciu') || 
+      query.includes('podkarpackie');
 
     let scopedSchools = schools;
     if (wantsUniversities && !wantsSecondary) {
@@ -275,7 +319,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     if (
       effectiveQuery.includes('pomoc') ||
       effectiveQuery.includes('co potraf') ||
-      effectiveQuery.includes('jak dziala')
+      effectiveQuery.includes('co umiesz') ||
+      effectiveQuery.includes('jak dziala') ||
+      effectiveQuery.includes('jak pracujesz')
     ) {
       return 'Mogę: 1) pokazać listę szkół, 2) podać profile w danej szkole, 3) znaleźć szkoły w mieście, 4) polecić szkoły pod Twoje zainteresowania.';
     }
@@ -283,31 +329,28 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     const wantsAllSchools =
       effectiveQuery.includes('wszystkie') ||
       effectiveQuery.includes('pelna lista') ||
-      effectiveQuery.includes('calosc');
+      effectiveQuery.includes('pełna lista') ||
+      effectiveQuery.includes('calosc') ||
+      effectiveQuery.includes('całość') ||
+      effectiveQuery.includes('lista') ||
+      effectiveQuery.includes('pokaz wszystko') ||
+      effectiveQuery.includes('pokaż wszystko') ||
+      effectiveQuery.includes('pokaz szkol') ||
+      effectiveQuery.includes('pokaż szkoły');
 
     if (
-      effectiveQuery.includes('lista') ||
-      effectiveQuery.includes('szkol') ||
-      effectiveQuery.includes('uniwersyt') ||
-      effectiveQuery.includes('uczelni') ||
-      effectiveQuery.includes('jakie szkol') ||
-      effectiveQuery.includes('dostepne') ||
-      effectiveQuery.includes('pokaz szkol')
+      wantsAllSchools
     ) {
-      const listedSchools = wantsAllSchools ? scopedSchools : scopedSchools.slice(0, 10);
+      const listedSchools = scopedSchools;
       const preview = listedSchools
         .map((school) => `• ${school.name} (${school.location})`)
         .join('\n');
 
-      if (wantsAllSchools) {
-        if (scopedSchools.length === 0) {
-          return 'Nie mam wyników dla takiego zakresu. Spróbuj bez filtra regionu albo zmień typ szkoły.';
-        }
-
-        return `Mamy obecnie ${scopedSchools.length} pozycji. Pełna lista:\n${preview}`;
+      if (scopedSchools.length === 0) {
+        return 'Nie mam wyników dla takiego zakresu. Spróbuj bez filtra regionu albo zmień typ szkoły.';
       }
 
-      return `Mamy obecnie ${scopedSchools.length} pozycji. Oto przykłady:\n${preview}\n\nNapisz „wszystkie szkoły”, a wypiszę pełną listę.`;
+      return `Mamy obecnie ${scopedSchools.length} pozycji. Pełna lista:\n${preview}`;
     }
 
     const exactSchool = scopedSchools.find((school) => {
@@ -348,7 +391,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     if (
       effectiveQuery.includes('polec') ||
       effectiveQuery.includes('dla mnie') ||
-      effectiveQuery.includes('dopasuj')
+      effectiveQuery.includes('dopasuj') ||
+      effectiveQuery.includes('rekomenduj') ||
+      effectiveQuery.includes('cos dla mnie') ||
+      effectiveQuery.includes('dobierz')
     ) {
       if (selectedInterests.length === 0) {
         return 'Najpierw wybierz zainteresowania, wtedy dam Ci dokładniejsze rekomendacje.';
@@ -397,7 +443,16 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       return `Znalazłem szkoły pasujące do pytania:\n${list}`;
     }
 
-    return 'Nie złapałem jeszcze kontekstu. Zapytaj np. o miasto (Rzeszów), profil (informatyka, medyczny, biznes) albo napisz „poleć szkoły dla mnie”.';
+    // Domyślnie - spróbuj pokazać kilka przykładów
+    if (scopedSchools.length > 0) {
+      const examples = scopedSchools.slice(0, 3);
+      const list = examples
+        .map((school) => `• ${school.name} (${school.location})`)
+        .join('\n');
+      return `Nie rozumiem dokładnie pytania, ale oto kilka ${educationType === 'secondary' ? 'szkół średnich' : 'uczelni'}:\n${list}\n\nZapytaj konkretnie o: 1) miasto (np. Rzeszów), 2) profil/kierunek (IT, medycyna), 3) poleć szkoły dla mnie`;
+    }
+
+    return 'Nie mam wyników dla Twoich kryteriów. Spróbuj zmienić typ szkoły lub region.';
   };
 
   const handleSend = async () => {
@@ -415,11 +470,13 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     setInput('');
 
     setIsLoading(true);
-    const externalReply = await askExternalAssistant(text, messages);
+    console.log('📤 Sending to chat:', { question: text, historyLength: nextHistory.length });
+    const externalReply = await askExternalAssistant(text, nextHistory);
+    console.log('📥 Chat response:', { external: !!externalReply, length: externalReply?.length });
     const assistantMessage: ChatMessage = {
       id: Date.now() + 1,
       role: 'assistant',
-      text: externalReply || getAssistantReply(text, messages),
+      text: externalReply || getAssistantReply(text, nextHistory),
     };
     setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
