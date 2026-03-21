@@ -112,7 +112,7 @@ src/
 ## 🎨 Widoki aplikacji
 
 ### 1. Wybór typu szkoły
-Użytkownik wybiera między szkoły średnie a uniwersytety.
+Użytkownik wybiera między szkołami średnimi i uniwersytetami.
 
 ### 2. Selektor zainteresowań
 Zaznacza co najmniej 3 zainteresowania (technologia, sztuka, biznes, itp.)
