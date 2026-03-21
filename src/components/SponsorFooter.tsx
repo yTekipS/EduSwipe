@@ -7,16 +7,10 @@ export const SponsorFooter: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           <div className="md:col-span-2">
             <h3 className="text-sm uppercase tracking-wider font-semibold mb-2 text-blue-100">
-              Projekt wspierany przez
+             <strong> Projekt wspierany przez</strong>
             </h3>
             <div className="flex items-center gap-4">
-              <div className="bg-white p-2 rounded-lg shadow-md">
-                <img src="/logo-min.png" alt="EduSwipe" className="h-10 w-auto" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold">EduSwipe</h2>
-                <p className="text-blue-100 text-sm">Wspieramy edukacyjne wybory młodzieży</p>
-              </div>
+                <img src="/kuratorium-logo.jpg" alt="Kuratorium Oświaty w Rzeszowi" className="h-24 w-auto" />
             </div>
           </div>
 
