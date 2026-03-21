@@ -1,0 +1,46 @@
+{
+  "name": "EduSwipe - Pomysł na edukację",
+  "short_name": "EduSwipe",
+  "description": "Podkarpacki Tinder Edukacyjny - odkrywaj ścieżki edukacyjne poprzez swiping",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "version": "1.1",
+  "icons": [
+    {
+      "src": "/logo-min.png?v=1.1",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-full.png?v=1.1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-min.png?v=1.1",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/logo-full.png?v=1.1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/logo-full.png?v=1.1",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education"]
+}

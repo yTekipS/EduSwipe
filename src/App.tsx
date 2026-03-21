@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './App.css';
-import { EducationType, School, MatchResult, UserProfile } from './types';
+import { EducationType, School, MatchResult, UserProfile, Coordinates } from './types';
 import { INTERESTS, SECONDARY_SCHOOLS, UNIVERSITIES } from './data/schools';
 import { TypeSelector } from './components/TypeSelector';
 import { InterestSelector } from './components/InterestSelector';
@@ -12,6 +12,12 @@ import { useDarkMode } from './hooks/useDarkMode';
 import { ChatPanel } from './components/ChatPanel';
 import { SponsorFooter } from './components/SponsorFooter';
 import { SponsorBanner } from './components/SponsorBanner';
+import { LocationSelector } from './components/LocationSelector';
+import { DistanceSlider } from './components/DistanceSlider';
+import {
+  filterSchoolsByDistance,
+  sortSchoolsByDistance,
+} from './utils/geolocation';
 
 type Step = 'type' | 'interests' | 'swipe' | 'results' | 'analytics';
 type SwipeVisualDirection = 'left' | 'right' | 'up' | 'neutral';
@@ -42,6 +48,7 @@ function App() {
     profile: {
       interests: [],
       selectedType: 'secondary',
+      distanceRadius: 20,
     },
     currentSchoolIndex: 0,
     likedSchools: [],
@@ -57,20 +64,34 @@ function App() {
   const [fastTrackNotice, setFastTrackNotice] = useState<FastTrackNotice | null>(null);
 
   const currentSchools = useMemo(() => {
-    const allSchools = state.profile.selectedType === 'secondary' ? SECONDARY_SCHOOLS : UNIVERSITIES;
+    let allSchools = state.profile.selectedType === 'secondary' ? SECONDARY_SCHOOLS : UNIVERSITIES;
     
     // Filtruj szkoły aby pokazać tylko te z match score > 0
     if (state.profile.interests.length === 0) {
-      return allSchools;
+      allSchools = allSchools;
+    } else {
+      allSchools = allSchools.filter((school) => {
+        const hasMatchingInterest = school.interests.some((interest) =>
+          state.profile.interests.includes(interest)
+        );
+        return hasMatchingInterest;
+      });
     }
-    
-    return allSchools.filter((school) => {
-      const hasMatchingInterest = school.interests.some((interest) =>
-        state.profile.interests.includes(interest)
+
+    // Filtruj po odległości jeśli użytkownik ma ustawioną lokalizację
+    if (state.profile.userLocation && state.profile.distanceRadius) {
+      allSchools = filterSchoolsByDistance(
+        allSchools,
+        state.profile.userLocation,
+        state.profile.distanceRadius
       );
-      return hasMatchingInterest;
-    });
-  }, [state.profile.selectedType, state.profile.interests]);
+      
+      // Sortuj po odległości
+      allSchools = sortSchoolsByDistance(allSchools, state.profile.userLocation);
+    }
+
+    return allSchools;
+  }, [state.profile.selectedType, state.profile.interests, state.profile.userLocation, state.profile.distanceRadius]);
 
   const currentSchool = currentSchools[state.currentSchoolIndex];
 
@@ -109,6 +130,27 @@ function App() {
         interests: prev.profile.interests.includes(interestId)
           ? prev.profile.interests.filter((id) => id !== interestId)
           : [...prev.profile.interests, interestId],
+      },
+    }));
+  };
+
+  const handleLocationChange = (location: Coordinates, city: string) => {
+    setState((prev) => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        userLocation: location,
+        userCity: city,
+      },
+    }));
+  };
+
+  const handleDistanceChange = (radius: number) => {
+    setState((prev) => ({
+      ...prev,
+      profile: {
+        ...prev.profile,
+        distanceRadius: radius,
       },
     }));
   };
@@ -363,6 +405,10 @@ function App() {
               selectedInterests={state.profile.interests}
               onToggle={handleToggleInterest}
             />
+            <div className="mt-8 space-y-6 max-w-2xl mx-auto">
+              <LocationSelector onLocationChange={handleLocationChange} />
+              <DistanceSlider value={state.profile.distanceRadius || 20} onChange={handleDistanceChange} />
+            </div>
             <div className="mt-10 text-center">
               <button
                 onClick={handleStartSwiping}

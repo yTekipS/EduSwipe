@@ -7,16 +7,23 @@ export interface Interest {
   emoji: string;
 }
 
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
 export interface School {
   id: string;
   name: string;
   type: EducationType;
   location: string;
+  coordinates?: Coordinates;
   distanceKm?: number;
   partnerCategory?: 'school' | 'company';
   specialization: string[];
   interests: string[];
   description: string;
+  bio?: string;
   datingBio?: string;
   greenFlags?: string[];
   redFlags?: string[];
@@ -29,6 +36,9 @@ export interface School {
 export interface UserProfile {
   interests: string[];
   selectedType: EducationType;
+  userLocation?: Coordinates;
+  userCity?: string;
+  distanceRadius?: number;
 }
 
 export interface MatchResult {

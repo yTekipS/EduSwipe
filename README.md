@@ -15,23 +15,27 @@ Uczniowie szkół średnich i podstawowych w Rzeszowie i na Podkarpaciu często 
 
 1. **Wybór typu szkoły** - szkoła średnia vs. uniwersytet
 2. **Wybór zainteresowań** - 12 kategorii zainteresowań (technologia, sztuka, sport, itp.)
-3. **Swiping Tinder-style**:
+3. **Selektor lokalizacji** - wpisz miasto z Podkarpacia (Open-Meteo API)
+4. **Filtrowanie po odległości** - automatyczne filtrowanie szkół w wybranym promieniu (domyślnie 20km)
+5. **Swiping Tinder-style**:
    - ⬅️ **Swipe left** - nie teraz
    - ➡️ **Swipe right** - pasuje!
    - ⬆️ **Super Like** (swipe up) - wyróżniona szkoła, animacja z obrotem
-4. **"IT'S A MATCH!" modal** - pojawiają się gdy dopasowanie > 50%
-5. **Fast Track notyfikacje** - kontekstowe powiadomienia dla Super Like (auto-dismiss po 5.2s)
-6. **Profil szkoły w stylu dating app**:
+6. **"IT'S A MATCH!" modal** - pojawiają się gdy dopasowanie > 50%
+7. **Fast Track notyfikacje** - kontekstowe powiadomienia dla Super Like (auto-dismiss po 5.2s)
+8. **Profil szkoły w stylu dating app**:
    - Bio szkoły
    - Zielone flagi 🟢 (zalety)
    - Czerwone flagi 🔴 (wady)
    - CTA button ("First Date" - link do strony/dni otwartych)
-7. **Ranking dopasowań** - wyranking szkół procentowo dopasowanych do Ciebie
-8. **Informacje szczegółowe** - opis, specjalizacje, lokalizacja każdej szkoły
-9. **Chat panel** - asystent edukacyjny do pytań o szkoły, kierunki, miasta
-10. **Dark mode** - przełączanie między trybem jasnym i ciemnym
-11. **Responsive design** - optymalizacja na wszystkie urządzenia (mobile-first)
-12. **Inteligentne filtrowanie** - szkoły z 0% dopasowaniem nie są pokazywane
+9. **Ranking dopasowań** - wyranking szkół posortowanych po dopasowaniu i odległości
+10. **Informacje szczegółowe** - opis, specjalizacje, lokalizacja, odległość każdej szkoły
+11. **Chat panel** - asystent edukacyjny do pytań o szkoły, kierunki, miasta
+12. **Dark mode** - przełączanie między trybem jasnym i ciemnym
+13. **Responsive design** - optymalizacja na wszystkie urządzenia (mobile-first)
+14. **Inteligentne filtrowanie** - szkoły z 0% dopasowaniem i poza wybranym dystansem nie są pokazywane
+15. **PWA z Service Worker** - offline support, auto-update ikon
+16. **Android app icon** - czapka akademicka 🎓 z adaptive icons
 
 ## 💻 Tech Stack
 
@@ -41,7 +45,9 @@ Uczniowie szkół średnich i podstawowych w Rzeszowie i na Podkarpaciu często 
 - **Vite 5** - szybki build tool
 - **Capacitor 8** - cross-platform native bridge (Android APK)
 - **Gradle 8.14** - Android build system
-- **PWA** - offline support (favicon i icons)
+- **PWA + Service Worker** - offline support, auto-update ikon
+- **Open-Meteo Geocoding API** - geolokalizacja miast bez API key
+- **Haversine formula** - obliczanie odległości między współrzędnymi
 - **Recharts** - wykresy dla analytics (dashboard)
 - **Dnd-kit** (opcjonalnie) - drag & drop dla przyszłych feature'ów
 
@@ -155,14 +161,18 @@ Start
   ↓
 [Wybór zainteresowań] - min 3
   ↓
-[Swiping po szołach]
+[Selektor lokalizacji] - wpisz miasto (Open-Meteo API)
+  ↓
+[Ustawienie dystansu] - domyślnie 20km, drag slider do zmiany
+  ↓
+[Swiping po szołach w wybranym promieniu]
   ├─ ⬅️ Swipe left → następna karta
   ├─ ➡️ Swipe right → jeśli match > 50% → "IT'S A MATCH!" modal
-  └─ ⬆️ Swipe up (Super Like) → Fast Track notификacja (5.2s auto-dismiss)
+  └─ ⬆️ Swipe up (Super Like) → Fast Track notifikacja (5.2s auto-dismiss)
   ↓
-[Wyniki] - ranking dopasowań z bio, flagami i CTA
+[Wyniki] - ranking dopasowań posortowany po odległości + bio, flagi i CTA
   ↓
-[Powrót do startu lub eksport]
+[Powrót do startu lub zmiana lokalizacji/dystansu]
 ```
 
 ## ✨ Przyszłe udoskonalenia
@@ -173,19 +183,23 @@ Start
 - [x] Fast Track notyfikacje
 - [x] Profil szkoły w stylu dating app (bio, flagi, CTA)
 - [x] Android APK build setup
-- [x] Branding (logo, favicon, app icon)
+- [x] Branding (logo, favicon, app icon 🎓)
 - [x] Dark mode (toggle w nagłówku, localStorage persistence)
 - [x] Chat panel z chatbotem (asystent edukacyjny)
 - [x] Sponsor banner i footer (ukryty w aplikacji mobilnej)
 - [x] Responsive design (mobile-first)
 - [x] Filtrowanie szkół z 0% match score
 - [x] Mapowanie zainteresowań na polskie nazwy
-- [ ] Instalacja na domowy ekran (PWA)
+- [x] Selektor lokalizacji (Open-Meteo API)
+- [x] Filtrowanie po odległości (Haversine formula)
+- [x] PWA z Service Worker (auto-update ikon)
+- [x] Adaptive icons na Androidzie
+- [ ] Instalacja na domowy ekran (PWA - już gotowe manifest.json)
 - [ ] Logowanie użytkownika
-- [ ] Zapisywanie preferencji
-- [ ] Integracja z rzeczywistym API
-- [ ] Mapka z lokalizacją
-- [ ] Sharing wyników
+- [ ] Zapisywanie preferencji w bazie
+- [ ] Integracja z rzeczywistym API szkół
+- [ ] Mapka interaktywna z lokalizacją
+- [ ] Sharing wyników na social media
 - [ ] Oceny i opinie od studentów
 
 ## 🌙 Dark Mode
