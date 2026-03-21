@@ -1,4 +1,4 @@
-// Performance monitoring utility
+// Narzędzie monitorowania wydajności
 export const reportMetric = (name: string, duration: number) => {
   if (process.env.NODE_ENV === 'development') {
     console.log(`⏱️ ${name}: ${duration.toFixed(2)}ms`);
@@ -13,14 +13,14 @@ export const measurePerformance = (name: string, fn: () => any) => {
   return result;
 };
 
-// Report Web Vitals
+// Raportuj Web Vitals
 export const reportWebVitals = (metric: any) => {
   if (process.env.NODE_ENV === 'development') {
     console.log(`📊 ${metric.name}: ${metric.value}`);
   }
 };
 
-// Optimize lighthouse score
+// Optymalizuj wynik Lighthouse
 export const initializePerformanceObserver = () => {
   if ('PerformanceObserver' in window) {
     try {

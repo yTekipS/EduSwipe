@@ -1,7 +1,7 @@
-// Data optimization utilities
+// Narzędzia optymalizacji danych
 
 /**
- * Memoize interest lookups to O(1)
+ * Zapamiętuj wyszukiwania zainteresowań w O(1)
  */
 export const createInterestMap = (interests: any[]) => {
   const map = new Map();
@@ -12,7 +12,7 @@ export const createInterestMap = (interests: any[]) => {
 };
 
 /**
- * Pre-compute school indexes for faster filtering
+ * Wstępnie oblicz indeksy szkół dla szybszego filtrowania
  */
 export const createSchoolIndex = (schools: any[]) => {
   const index = new Map();

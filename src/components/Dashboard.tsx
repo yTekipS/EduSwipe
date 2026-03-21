@@ -26,7 +26,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
   const [isDark, setIsDark] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   useEffect(() => {
-    // Initialize with default values (no randomization)
+    // Inicjuj domyślnymi wartościami (bez losowania)
     setMatchCount(23);
     setConversionRate(78);
     setDirectionData([
@@ -59,7 +59,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onBack }) => {
       { tag: 'science', label: 'Nauka', percentage: 1 },
     ]);
 
-    // Track dark mode changes
+    // Śledź zmiany trybu ciemnego
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       setIsDark(e.matches);

@@ -9,7 +9,7 @@ export default defineConfig({
     middlewareMode: false
   },
   build: {
-    // Code splitting by routes
+    // Dzielenie kodu na trasy
     rollupOptions: {
       output: {
         manualChunks: {
@@ -19,7 +19,7 @@ export default defineConfig({
         }
       }
     },
-    // Optimize build
+    // Optymalizuj budowę
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -27,15 +27,15 @@ export default defineConfig({
         passes: 2
       }
     },
-    // Target modern browsers
+    // Kieruj na nowoczesne przeglądarki
     target: 'es2020',
-    // CSS code splitting
+    // Dzielenie kodu CSS
     cssCodeSplit: true,
-    // Build performance
+    // Wydajność budowy
     reportCompressedSize: false,
     chunkSizeWarningLimit: 600
   },
-  // Optimize dependencies
+  // Optymalizuj zależności
   optimizeDeps: {
     include: ['react', 'react-dom', 'recharts'],
     esbuildOptions: {

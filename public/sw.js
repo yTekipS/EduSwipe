@@ -1,4 +1,4 @@
-// Service Worker - Advanced caching strategy with performance optimization
+// Service Worker - Zaawansowana strategia cachowania z optymalizacją wydajności
 const CACHE_NAME = 'eduswipe-v' + Date.now();
 const STATIC_ASSETS = [
   '/',
@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  // Pre-cache static assets
+  // Wstępne cachowanie zasobów statycznych
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
@@ -40,7 +40,7 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Network-first dla API requests
+  // Najpierw sieć dla żądań API
   if (url.pathname.includes('/api/') || url.hostname !== 'localhost') {
     event.respondWith(
       fetch(request).catch(() => {
@@ -56,13 +56,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first dla statycznych assets
+  // Najpierw cache dla zasobów statycznych
   event.respondWith(
     caches.match(request).then((response) => {
       if (response) return response;
 
       return fetch(request).then((res) => {
-        // Nie cachuj non-successful responses
+        // Nie cachuj odpowiedzi bez powodzenia
         if (!res || res.status !== 200 || res.type === 'error') {
           return res;
         }

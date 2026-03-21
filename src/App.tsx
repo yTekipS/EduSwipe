@@ -15,13 +15,13 @@ import {
   sortSchoolsByDistance,
 } from './utils/geolocation';
 
-// Lazy load heavy components
+// Leniwе ładowanie ciężkich komponentów
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
 const ChatPanel = lazy(() => import('./components/ChatPanel').then(m => ({ default: m.ChatPanel })));
 const SponsorFooter = lazy(() => import('./components/SponsorFooter').then(m => ({ default: m.SponsorFooter })));
 const SponsorBanner = lazy(() => import('./components/SponsorBanner').then(m => ({ default: m.SponsorBanner })));
 
-// Loading fallback
+// Wskaźnik ładowania
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center w-full h-32">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
@@ -474,7 +474,7 @@ function App() {
 
           <div className="relative w-full max-w-xl bg-white dark:bg-slate-800 rounded-2xl p-8 text-center shadow-2xl border-4 border-primary dark:border-blue-400 transition-colors">
             <p className="text-4xl md:text-5xl font-black text-primary dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-blue-400 dark:to-cyan-400 mb-2 transition-colors">IT'S A MATCH!</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-5 transition-colors">MASZ PARY! 💘</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-5 transition-colors">MASZ PARĘ! 💘</p>
 
             <p className="text-lg font-semibold text-gray-900 dark:text-white mb-1 transition-colors">{matchedSchool.name}</p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 transition-colors">
