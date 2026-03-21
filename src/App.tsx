@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, lazy } from 'react';
 import './App.css';
 import { EducationType, School, MatchResult, UserProfile, Coordinates } from './types';
 import { INTERESTS, SECONDARY_SCHOOLS, UNIVERSITIES } from './data/schools';
@@ -7,17 +7,19 @@ import { InterestSelector } from './components/InterestSelector';
 import { SwipeCard } from './components/SwipeCard';
 import { Results } from './components/Results';
 import { Header } from './components/Header';
-import { Dashboard } from './components/Dashboard';
 import { useDarkMode } from './hooks/useDarkMode';
-import { ChatPanel } from './components/ChatPanel';
-import { SponsorFooter } from './components/SponsorFooter';
-import { SponsorBanner } from './components/SponsorBanner';
 import { LocationSelector } from './components/LocationSelector';
 import { DistanceSlider } from './components/DistanceSlider';
 import {
   filterSchoolsByDistance,
   sortSchoolsByDistance,
 } from './utils/geolocation';
+
+// Lazy load heavy components
+const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
+const ChatPanel = lazy(() => import('./components/ChatPanel').then(m => ({ default: m.ChatPanel })));
+const SponsorFooter = lazy(() => import('./components/SponsorFooter').then(m => ({ default: m.SponsorFooter })));
+const SponsorBanner = lazy(() => import('./components/SponsorBanner').then(m => ({ default: m.SponsorBanner })));
 
 type Step = 'type' | 'interests' | 'swipe' | 'results' | 'analytics';
 type SwipeVisualDirection = 'left' | 'right' | 'up' | 'neutral';

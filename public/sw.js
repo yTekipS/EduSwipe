@@ -1,10 +1,22 @@
-// Service Worker - czyszczenie cache przy każdym update
+// Service Worker - Advanced caching strategy with performance optimization
 const CACHE_NAME = 'eduswipe-v' + Date.now();
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/logo-min.png',
+  '/logo-full.png'
+];
 
 self.addEventListener('install', (event) => {
-  // Wymusić aktywację nowego service workera
+  // Pre-cache static assets
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(STATIC_ASSETS);
+    })
+  );
   self.skipWaiting();
-  console.log('🔄 Service Worker: zainstalowany z nową wersją');
+  console.log('🔄 Service Worker: zainstalowany z cache');
 });
 
 self.addEventListener('activate', (event) => {
@@ -20,24 +32,46 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  // Przejąć kontrolę od razu
   self.clients.claim();
   console.log('✅ Service Worker: aktywny');
 });
 
 self.addEventListener('fetch', (event) => {
-  // Dla ikon - zawsze pobieraj z sieci
-  if (event.request.url.includes('logo-') || event.request.url.includes('mipmap')) {
-    event.respondWith(fetch(event.request));
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Network-first dla API requests
+  if (url.pathname.includes('/api/') || url.hostname !== 'localhost') {
+    event.respondWith(
+      fetch(request).catch(() => {
+        return caches.match(request);
+      })
+    );
     return;
   }
 
-  // Dla pozostałych - cache first
+  // Dla ikon - zawsze pobieraj z sieci
+  if (request.url.includes('logo-') || request.url.includes('mipmap')) {
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
+    return;
+  }
+
+  // Cache-first dla statycznych assets
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request).then((res) => {
-        const cache = caches.open(CACHE_NAME);
-        cache.then((c) => c.put(event.request, res.clone()));
+    caches.match(request).then((response) => {
+      if (response) return response;
+
+      return fetch(request).then((res) => {
+        // Nie cachuj non-successful responses
+        if (!res || res.status !== 200 || res.type === 'error') {
+          return res;
+        }
+
+        const responseClone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(request, responseClone);
+        });
+
         return res;
       });
     })
